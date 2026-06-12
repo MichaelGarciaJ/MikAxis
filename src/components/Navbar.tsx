@@ -1,32 +1,79 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth, db } from '../config/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { ChevronDown, UserRound, LogOut } from 'lucide-react';
 import './Navbar.css';
 
+/**
+ * Barra de navegación principal del sistema.
+ * Contiene el logo y el menú de perfil de usuario a la derecha.
+ */
 export default function Navbar() {
-  const [time, setTime] = useState(new Date());
-  const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userData, setUserData] = useState<{ nombre: string, foto: string } | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, 'usuarios', user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setUserData({
+              nombre: data.nombreUsuario || user.displayName || 'Usuario',
+              foto: data.fotoUsuario || user.photoURL || ''
+            });
+          } else {
+            setUserData({
+              nombre: user.displayName || 'Usuario',
+              foto: user.photoURL || ''
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching user data", error);
+        }
+      } else {
+        setUserData(null);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  /**
+   * Cierra la sesión activa y redirige al usuario al login.
+   */
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
   };
 
-  const formatDate = (date) => {
-    return date.toLocaleDateString('es-ES', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-    });
+  /**
+   * Extrae la inicial del nombre para usar como avatar alternativo.
+   * @param name - Nombre del usuario
+   * @returns La primera letra en mayúscula
+   */
+  const getInitials = (name: string) => {
+    return name ? name.charAt(0).toUpperCase() : 'U';
   };
 
   return (
@@ -40,25 +87,46 @@ export default function Navbar() {
           <span className="logo-text">Mik<span className="accent">Axis</span></span>
         </Link>
 
-        <div className="navbar-menu">
-          <Link to="/" className={`menu-link ${location.pathname === '/' ? 'active' : ''}`}>
-            Dashboard
-          </Link>
-          <Link to="/reelmemo" className={`menu-link ${location.pathname.startsWith('/reelmemo') ? 'active' : ''}`}>
-            ReelMemo
-          </Link>
-        </div>
+        {/* Menú central eliminado para dar foco al dashboard */}
 
-        <div className="navbar-status">
-          <div className="status-indicator">
-            <span className="pulse-dot"></span>
-            <span className="status-text">Online</span>
-          </div>
-          <div className="vertical-divider"></div>
-          <div className="clock-widget">
-            <span className="clock-date">{formatDate(time)}</span>
-            <span className="clock-time">{formatTime(time)}</span>
-          </div>
+        <div className="navbar-status" ref={dropdownRef}>
+          {userData ? (
+            <div className="profile-menu-container">
+              <button 
+                className="profile-button" 
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                {userData.foto ? (
+                  <img src={userData.foto} alt="Perfil" className="profile-pic" />
+                ) : (
+                  <div className="profile-pic-placeholder">
+                    {getInitials(userData.nombre)}
+                  </div>
+                )}
+                <span className="profile-name">{userData.nombre}</span>
+                <ChevronDown className={`chevron ${dropdownOpen ? 'open' : ''}`} size={16} />
+              </button>
+
+              {dropdownOpen && (
+                <div className="profile-dropdown animate-fade-in">
+                  <Link to="/perfil" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
+                    <UserRound size={18} />
+                    Mi Perfil / Configuración
+                  </Link>
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item logout-button" onClick={handleLogout}>
+                    <LogOut size={18} />
+                    Cerrar Sesión
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="status-indicator">
+              <span className="pulse-dot"></span>
+              <span className="status-text">Cargando</span>
+            </div>
+          )}
         </div>
       </div>
     </nav>

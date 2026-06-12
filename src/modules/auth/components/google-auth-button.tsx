@@ -5,6 +5,10 @@ interface Props {
   disabled: boolean;
 }
 
+/**
+ * Componente para el botón de iniciar sesión con Google.
+ * Cumple con los estándares visuales requeridos por Google (logo SVG correcto y colores oficiales).
+ */
 export const GoogleAuthButton: React.FC<Props> = ({ onClick, disabled }) => {
   return (
     <button 

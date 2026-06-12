@@ -7,7 +7,7 @@ export interface UserEntity {
   nombreUsuario: string;
   fotoUsuario: string;
   isApproved: boolean;
-  creado: Date | any;
+  creado: Date | unknown;
   rol?: string;
   modulosPermitidos?: string[];
 }

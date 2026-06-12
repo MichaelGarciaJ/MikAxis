@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
 
@@ -12,9 +12,9 @@ import { auth, db } from '../config/firebase';
  * @param {JSX.Element} props.children - Los componentes hijos a renderizar si el usuario está autenticado.
  * @returns {JSX.Element} - Retorna a los hijos si hay usuario, redirige a /login de lo contrario.
  */
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isApproved, setIsApproved] = useState(true);
 
   useEffect(() => {
@@ -101,12 +101,14 @@ export default function ProtectedRoute({ children }) {
             transition: 'all 0.2s'
           }}
           onMouseOver={(e) => {
-            e.target.style.backgroundColor = 'var(--accent-color)';
-            e.target.style.color = '#0F172A';
+            const target = e.target as HTMLButtonElement;
+            target.style.backgroundColor = 'var(--accent-color)';
+            target.style.color = '#0F172A';
           }}
           onMouseOut={(e) => {
-            e.target.style.backgroundColor = 'transparent';
-            e.target.style.color = 'var(--accent-color)';
+            const target = e.target as HTMLButtonElement;
+            target.style.backgroundColor = 'transparent';
+            target.style.color = 'var(--accent-color)';
           }}
         >
           Cerrar Sesión

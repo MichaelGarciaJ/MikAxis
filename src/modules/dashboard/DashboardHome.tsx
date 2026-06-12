@@ -2,6 +2,10 @@
 import { Link } from 'react-router-dom';
 import './DashboardHome.css';
 
+/**
+ * Componente DashboardHome.
+ * Muestra el panel principal ("Centro de Mandos") con acceso a los diferentes módulos.
+ */
 export default function DashboardHome() {
   const modules = [
     {
@@ -58,34 +62,16 @@ export default function DashboardHome() {
         <p className="welcome-subtitle">Tu portal privado y personal de herramientas unificadas.</p>
       </header>
 
-      <section className="dashboard-stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">3</div>
-          <div className="stat-label">Módulos Planificados</div>
-        </div>
-        <div className="stat-card active-stat">
-          <div className="stat-value">1</div>
-          <div className="stat-label">Módulo Activo</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">GitHub</div>
-          <div className="stat-label">Repositorio Sincronizado</div>
-        </div>
-      </section>
+
 
       <main className="modules-section">
         <h2 className="section-title">Módulos del Sistema</h2>
         <div className="modules-grid">
           {modules.map((mod) => {
             const isActive = mod.status === 'active';
-            const CardComponent = isActive ? Link : 'div';
             
-            return (
-              <CardComponent 
-                key={mod.id} 
-                to={isActive ? mod.path : undefined} 
-                className={`module-card ${mod.status}`}
-              >
+            const cardContent = (
+              <>
                 <div className="card-glowing-effect"></div>
                 <div className="card-header">
                   <div className="icon-wrapper">
@@ -113,7 +99,17 @@ export default function DashboardHome() {
                     </span>
                   )}
                 </div>
-              </CardComponent>
+              </>
+            );
+
+            return isActive ? (
+              <Link key={mod.id} to={mod.path} className={`module-card ${mod.status}`}>
+                {cardContent}
+              </Link>
+            ) : (
+              <div key={mod.id} className={`module-card ${mod.status}`}>
+                {cardContent}
+              </div>
             );
           })}
         </div>

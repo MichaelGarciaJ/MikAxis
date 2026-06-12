@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoginCard } from './components/login-card';
 import { RegisterCard } from './components/register-card';
@@ -7,6 +7,10 @@ import { GoogleAuthButton } from './components/google-auth-button';
 import { loginWithEmail, registerWithEmail, loginWithGoogle, resetPassword } from '../../data/service/user-service';
 import './auth-page.css';
 
+/**
+ * Componente principal de la vista de Autenticación.
+ * Maneja los formularios de Login, Registro y Recuperación de contraseña.
+ */
 export default function AuthPage() {
   const [view, setView] = useState<'login' | 'register' | 'forgot'>('login');
   const [error, setError] = useState('');
@@ -14,6 +18,9 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  /**
+   * Intenta iniciar sesión usando correo y contraseña.
+   */
   const handleLogin = async (email: string, pass: string) => {
     setIsLoading(true);
     setError('');
@@ -21,7 +28,7 @@ export default function AuthPage() {
     try {
       await loginWithEmail(email, pass);
       navigate('/');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error en autenticación:', err);
       handleAuthError(err);
     } finally {
@@ -29,6 +36,9 @@ export default function AuthPage() {
     }
   };
 
+  /**
+   * Intenta crear una nueva cuenta usando correo, contraseña y nombre.
+   */
   const handleRegister = async (email: string, pass: string, name: string) => {
     setIsLoading(true);
     setError('');
@@ -36,7 +46,7 @@ export default function AuthPage() {
     try {
       await registerWithEmail(email, pass, name);
       navigate('/');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error en registro:', err);
       handleAuthError(err);
     } finally {
@@ -44,6 +54,9 @@ export default function AuthPage() {
     }
   };
 
+  /**
+   * Ejecuta el flujo de inicio de sesión de Google a través de un popup.
+   */
   const handleGoogle = async () => {
     setIsLoading(true);
     setError('');
@@ -51,7 +64,7 @@ export default function AuthPage() {
     try {
       await loginWithGoogle();
       navigate('/');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error con Google Auth:', err);
       setError('Error al iniciar sesión con Google.');
     } finally {
@@ -59,6 +72,9 @@ export default function AuthPage() {
     }
   };
 
+  /**
+   * Envía un enlace de recuperación de contraseña al correo dado.
+   */
   const handleResetPassword = async (email: string) => {
     setIsLoading(true);
     setError('');
@@ -67,9 +83,10 @@ export default function AuthPage() {
       await resetPassword(email);
       setSuccessMessage('Correo de restablecimiento enviado con éxito. Revisa tu bandeja de entrada.');
       setView('login');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error al restablecer contraseña:', err);
-      if (err.code === 'auth/user-not-found') {
+      const error = err as { code?: string };
+      if (error.code === 'auth/user-not-found') {
         setError('No hay ningún usuario registrado con este correo.');
       } else {
         setError('Error al intentar enviar el correo de restablecimiento.');
@@ -79,12 +96,18 @@ export default function AuthPage() {
     }
   };
 
-  const handleAuthError = (err: any) => {
-    if (err.code === 'auth/email-already-in-use') {
+  /**
+   * Procesa los errores de autenticación devueltos por Firebase para
+   * convertirlos en mensajes amigables para el usuario.
+   * @param err - El error crudo lanzado por Firebase.
+   */
+  const handleAuthError = (err: unknown) => {
+    const error = err as { code?: string };
+    if (error.code === 'auth/email-already-in-use') {
       setError('El correo electrónico ya está registrado.');
-    } else if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
       setError('Credenciales incorrectas o el usuario no existe.');
-    } else if (err.code === 'auth/weak-password') {
+    } else if (error.code === 'auth/weak-password') {
       setError('La contraseña debe tener al menos 6 caracteres.');
     } else {
       setError('Ha ocurrido un error. Por favor, intenta de nuevo.');

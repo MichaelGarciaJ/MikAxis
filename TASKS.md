@@ -5,6 +5,9 @@
 ## In Progress
 
 ## Done
+- [x] Creación de nuevo módulo `profile` basado en la lógica de ReelMemo.
+- [x] Mejora de Navbar: Remover enlaces redundantes e integrar menú desplegable de perfil.
+- [x] Rediseño del Dashboard: Eliminar tarjetas superiores para destacar grid de módulos.
 - [x] Purga de seguridad: borrar repo remoto y local `.git` para proteger claves.
 - [x] Reconstrucción de arquitectura limpia y nombres kebab-case (estándar ReelMemo).
 - [x] Migración completa a TypeScript.
