@@ -1,3 +1,6 @@
+/* =========================================
+   LAYOUT PRINCIPAL
+   ========================================= */
 .profile-home {
   max-width: 800px;
   margin: 40px auto;
@@ -13,6 +16,9 @@
   font-size: 18px;
 }
 
+/* =========================================
+   CABECERA (HEADER) Y TARJETA
+   ========================================= */
 .profile-header {
   margin-bottom: 32px;
   text-align: left;
@@ -76,6 +82,9 @@
   font-weight: 800;
 }
 
+/* =========================================
+   INFORMACIÓN DE USUARIO Y EDICIÓN
+   ========================================= */
 .profile-info {
   flex: 1;
 }
@@ -184,6 +193,15 @@
   color: #ef4444 !important;
 }
 
+/* =========================================
+   SECCIONES Y AJUSTES
+   ========================================= */
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .settings-list {
   display: flex;
   flex-direction: column;
@@ -236,6 +254,9 @@
   border-color: rgba(239, 68, 68, 0.4);
 }
 
+/* =========================================
+   MEDIA QUERIES (RESPONSIVE)
+   ========================================= */
 @media (max-width: 640px) {
   .profile-card-header {
     flex-direction: column;
@@ -252,6 +273,9 @@
   }
 }
 
+/* =========================================
+   MODAL DE CONFIRMACIÓN (ZONA PELIGROSA)
+   ========================================= */
 /* Modal de Eliminación de Cuenta */
 .profile-modal-overlay {
   position: fixed;

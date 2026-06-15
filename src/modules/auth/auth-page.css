@@ -1,3 +1,6 @@
+/* =========================================
+   LAYOUT PRINCIPAL
+   ========================================= */
 .login-container {
   min-height: 100vh;
   display: flex;
@@ -31,6 +34,9 @@
   background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
 }
 
+/* =========================================
+   CABECERA DEL LOGIN
+   ========================================= */
 .login-header {
   text-align: center;
   margin-bottom: 36px;
@@ -62,6 +68,9 @@
   font-weight: 500;
 }
 
+/* =========================================
+   FORMULARIOS Y CAMPOS
+   ========================================= */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -147,6 +156,9 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* =========================================
+   BOTONES Y ACCIONES
+   ========================================= */
 .login-button {
   background: var(--accent-color);
   color: #0F172A;
@@ -172,6 +184,9 @@
   cursor: not-allowed;
 }
 
+/* =========================================
+   MENSAJES DE ERROR Y ÉXITO
+   ========================================= */
 .login-error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);

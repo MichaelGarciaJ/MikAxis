@@ -1,8 +1,14 @@
+/* =========================================
+   LAYOUT PRINCIPAL
+   ========================================= */
 .dashboard-home {
   padding-top: 40px;
   padding-bottom: 60px;
 }
 
+/* =========================================
+   CABECERA DE BIENVENIDA
+   ========================================= */
 .dashboard-header {
   text-align: center;
   margin-bottom: 50px;
@@ -39,7 +45,9 @@
   margin: 0 auto;
 }
 
-/* Stats Section */
+/* =========================================
+   SECCIÓN DE ESTADÍSTICAS
+   ========================================= */
 .dashboard-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -78,7 +86,9 @@
   color: var(--text-secondary);
 }
 
-/* Modules Section */
+/* =========================================
+   SECCIÓN DE MÓDULOS (TARJETAS)
+   ========================================= */
 .modules-section {
   margin-top: 20px;
 }
@@ -97,20 +107,23 @@
   gap: 28px;
 }
 
-/* Module Cards */
+/* =========================================
+   TARJETA INDIVIDUAL DE MÓDULO
+   ========================================= */
 .module-card {
   position: relative;
-  background: var(--card-bg);
+  background: linear-gradient(145deg, var(--card-bg) 0%, rgba(30, 41, 59, 0.4) 100%);
   border: 1px solid var(--card-border);
-  border-radius: 16px;
-  padding: 28px;
+  border-radius: 20px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: inherit;
-  transition: var(--transition-smooth);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
   height: 100%;
+  backdrop-filter: blur(10px);
 }
 
 .card-glowing-effect {
@@ -119,15 +132,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255,0.06), transparent 40%);
+  background: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.15), transparent 60%);
   z-index: 1;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s;
+  opacity: 0.5;
+  transition: opacity 0.5s ease, background 0.5s ease;
 }
 
 .module-card:hover .card-glowing-effect {
   opacity: 1;
+  background: radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.25), transparent 70%);
 }
 
 .module-card.active {
@@ -135,9 +149,9 @@
 }
 
 .module-card.active:hover {
-  transform: translateY(-6px);
-  border-color: var(--card-hover-border);
-  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 30px rgba(56, 189, 248, 0.15);
 }
 
 .module-card.pending {
@@ -156,39 +170,21 @@
 
 .icon-wrapper {
   background: rgba(255, 255, 255, 0.03);
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transition-smooth);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .module-card.active:hover .icon-wrapper {
-  background: rgba(56, 189, 248, 0.1);
-  border-color: rgba(56, 189, 248, 0.3);
-}
-
-.phase-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.phase-badge.active {
-  background: rgba(56, 189, 248, 0.1);
-  color: var(--accent-color);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-}
-
-.phase-badge.pending {
-  background: rgba(148, 163, 184, 0.1);
-  color: var(--text-secondary);
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.25);
 }
 
 .card-body {
@@ -243,7 +239,10 @@
   color: var(--text-secondary);
 }
 
-@media (max-width: 640px) {
+/* =========================================
+   MEDIA QUERIES (RESPONSIVE)
+   ========================================= */
+@media (max-width: 768px) {
   .welcome-title {
     font-size: 32px;
   }

@@ -19,7 +19,10 @@ export const ReelMemoPage: React.FC = () => {
                     <Link to="/" className="rm-back-button" title="Volver al Dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
                         <LayoutDashboard size={20} />
                     </Link>
-                    <Link to="/reelmemo" className="rm-app-title" style={{ textDecoration: 'none', color: 'inherit' }}>ReelMemo</Link>
+                    <Link to="/reelmemo" className="rm-app-title" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <img src="/reelmemo-logo.png" alt="ReelMemo Logo" style={{ width: '30px', height: '30px', borderRadius: '6px' }} />
+                        ReelMemo
+                    </Link>
                     <Link to="/reelmemo/search" className="rm-search-button">
                         <Search size={24} />
                     </Link>
