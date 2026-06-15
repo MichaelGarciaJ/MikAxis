@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Mail } from 'lucide-react';
 
 interface Props {
   onReset: (email: string) => void;
@@ -21,14 +22,17 @@ export const ForgotPassword: React.FC<Props> = ({ onReset, isLoading, onCancel }
       </p>
       <div className="form-group">
         <label htmlFor="reset-email">Correo Electrónico</label>
-        <input 
-          type="email" 
-          id="reset-email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          placeholder="tu@correo.com"
-          required 
-        />
+        <div className="input-wrapper">
+          <Mail className="input-icon" size={20} />
+          <input 
+            type="email" 
+            id="reset-email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            placeholder="tu@correo.com"
+            required 
+          />
+        </div>
       </div>
       <button type="submit" className="login-button" disabled={isLoading}>
         {isLoading ? 'Enviando...' : 'Restablecer Contraseña'}

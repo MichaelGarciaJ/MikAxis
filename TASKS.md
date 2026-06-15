@@ -5,6 +5,7 @@
 ## In Progress
 
 ## Done
+- [x] Unificar diseño del logotipo (crear componente Logo, sincronizar favicon y refactorizar auth y navbar).
 - [x] Refactorizar la Biblioteca (Vistos) para que el chip 'Todo' funcione como un desplegable (modal) idéntico a Categorías.
 - [x] Añadir botón 'X' en Detalles para cerrar todas las ventanas anidadas y volver directamente al Home.
 - [x] Optimizar la cuadrícula (`MediaGrid`) en dispositivos móviles para mostrar siempre 3 columnas en lugar de 1.

@@ -4,6 +4,7 @@ import { auth, db } from '../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { ChevronDown, UserRound, LogOut } from 'lucide-react';
+import { Logo } from './logo';
 import './navbar.css';
 
 /**
@@ -80,10 +81,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-container container">
         <Link to="/" className="navbar-logo">
-          <svg className="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 4L20 20M4 20L20 4" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round"/>
-            <circle cx="12" cy="12" r="3" fill="#0F172A" stroke="#38BDF8" strokeWidth="2"/>
-          </svg>
+          <Logo className="logo-icon" />
           <span className="logo-text">Mik<span className="accent">Axis</span></span>
         </Link>
 

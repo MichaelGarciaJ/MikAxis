@@ -5,6 +5,8 @@ import { RegisterCard } from './components/register-card';
 import { ForgotPassword } from './components/forgot-password';
 import { GoogleAuthButton } from './components/google-auth-button';
 import { loginWithEmail, registerWithEmail, loginWithGoogle, resetPassword } from '../../data/service/user-service';
+import { Logo } from '../../components/logo';
+import { useToast } from '../../components/toast-context';
 import './auth-page.css';
 
 /**
@@ -13,20 +15,18 @@ import './auth-page.css';
  */
 export default function AuthPage() {
   const [view, setView] = useState<'login' | 'register' | 'forgot'>('login');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   /**
    * Intenta iniciar sesión usando correo y contraseña.
    */
   const handleLogin = async (email: string, pass: string) => {
     setIsLoading(true);
-    setError('');
-    setSuccessMessage('');
     try {
       await loginWithEmail(email, pass);
+      showToast('Sesión iniciada con éxito', 'success');
       navigate('/');
     } catch (err) {
       console.error('Error en autenticación:', err);
@@ -41,10 +41,9 @@ export default function AuthPage() {
    */
   const handleRegister = async (email: string, pass: string, name: string) => {
     setIsLoading(true);
-    setError('');
-    setSuccessMessage('');
     try {
       await registerWithEmail(email, pass, name);
+      showToast('Cuenta creada con éxito', 'success');
       navigate('/');
     } catch (err) {
       console.error('Error en registro:', err);
@@ -59,14 +58,13 @@ export default function AuthPage() {
    */
   const handleGoogle = async () => {
     setIsLoading(true);
-    setError('');
-    setSuccessMessage('');
     try {
       await loginWithGoogle();
+      showToast('Autenticado con Google', 'success');
       navigate('/');
     } catch (err) {
       console.error('Error con Google Auth:', err);
-      setError('Error al iniciar sesión con Google.');
+      showToast('Error al iniciar sesión con Google.', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -77,19 +75,17 @@ export default function AuthPage() {
    */
   const handleResetPassword = async (email: string) => {
     setIsLoading(true);
-    setError('');
-    setSuccessMessage('');
     try {
       await resetPassword(email);
-      setSuccessMessage('Correo de restablecimiento enviado con éxito. Revisa tu bandeja de entrada.');
+      showToast('Correo de restablecimiento enviado con éxito. Revisa tu bandeja de entrada.', 'success');
       setView('login');
     } catch (err) {
       console.error('Error al restablecer contraseña:', err);
       const error = err as { code?: string };
       if (error.code === 'auth/user-not-found') {
-        setError('No hay ningún usuario registrado con este correo.');
+        showToast('No hay ningún usuario registrado con este correo.', 'error');
       } else {
-        setError('Error al intentar enviar el correo de restablecimiento.');
+        showToast('Error al intentar enviar el correo de restablecimiento.', 'error');
       }
     } finally {
       setIsLoading(false);
@@ -104,13 +100,13 @@ export default function AuthPage() {
   const handleAuthError = (err: unknown) => {
     const error = err as { code?: string };
     if (error.code === 'auth/email-already-in-use') {
-      setError('El correo electrónico ya está registrado.');
+      showToast('El correo electrónico ya está registrado.', 'error');
     } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-      setError('Credenciales incorrectas o el usuario no existe.');
+      showToast('Credenciales incorrectas o el usuario no existe.', 'error');
     } else if (error.code === 'auth/weak-password') {
-      setError('La contraseña debe tener al menos 6 caracteres.');
+      showToast('La contraseña debe tener al menos 6 caracteres.', 'error');
     } else {
-      setError('Ha ocurrido un error. Por favor, intenta de nuevo.');
+      showToast('Ha ocurrido un error. Por favor, intenta de nuevo.', 'error');
     }
   };
 
@@ -118,10 +114,7 @@ export default function AuthPage() {
     <div className="login-container">
       <div className="login-box animate-fade-in">
         <div className="login-header">
-          <svg className="login-logo-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 4L20 20M4 20L20 4" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round"/>
-            <circle cx="12" cy="12" r="3" fill="#0F172A" stroke="#38BDF8" strokeWidth="2"/>
-          </svg>
+          <Logo className="login-logo-icon" width={40} height={40} />
           <h1 className="login-title">Mik<span className="accent">Axis</span></h1>
           <p className="login-subtitle">
             {view === 'register' ? 'Crea tu Cuenta' : 
@@ -130,14 +123,11 @@ export default function AuthPage() {
           </p>
         </div>
 
-        {error && <div className="login-error">{error}</div>}
-        {successMessage && <div className="login-success">{successMessage}</div>}
-
         {view === 'login' && (
           <LoginCard 
             onSubmit={handleLogin} 
             isLoading={isLoading} 
-            onForgotClick={() => { setView('forgot'); setError(''); setSuccessMessage(''); }} 
+            onForgotClick={() => setView('forgot')} 
           />
         )}
 
@@ -152,7 +142,7 @@ export default function AuthPage() {
           <ForgotPassword 
             onReset={handleResetPassword} 
             isLoading={isLoading} 
-            onCancel={() => { setView('login'); setError(''); setSuccessMessage(''); }} 
+            onCancel={() => setView('login')} 
           />
         )}
 
@@ -169,11 +159,7 @@ export default function AuthPage() {
               {view === 'register' ? '¿Ya tienes una cuenta?' : '¿No tienes cuenta?'}
               <button 
                 type="button" 
-                onClick={() => {
-                  setView(view === 'register' ? 'login' : 'register');
-                  setError('');
-                  setSuccessMessage('');
-                }}
+                onClick={() => setView(view === 'register' ? 'login' : 'register')}
                 disabled={isLoading}
               >
                 {view === 'register' ? 'Inicia Sesión aquí' : 'Regístrate aquí'}
