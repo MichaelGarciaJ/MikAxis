@@ -4,7 +4,7 @@ import { auth, db } from '../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { ChevronDown, UserRound, LogOut } from 'lucide-react';
-import './Navbar.css';
+import './navbar.css';
 
 /**
  * Barra de navegación principal del sistema.

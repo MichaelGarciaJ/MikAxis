@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import './DashboardHome.css';
+import './dashboard-home.css';
 
 /**
  * Componente DashboardHome.

@@ -1,40 +1,46 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import DashboardHome from './modules/dashboard/DashboardHome';
-import ReelMemoHome from './modules/reelmemo/ReelMemoHome';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from './components/navbar';
+import DashboardHome from './modules/dashboard/dashboard-home';
+import { ReelMemoPage } from './modules/reelmemo/reelmemo-page';
 import AuthPage from './modules/auth/auth-page';
-import ProfileHome from './modules/profile/ProfileHome';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProfileHome from './modules/profile/profile-home';
+import ProtectedRoute from './components/protected-route';
 import './App.css';
 
 /**
+ * Layout interno que permite condicionalmente ocultar el Navbar en módulos inmersivos como ReelMemo.
+ */
+const AppLayout = () => {
+  const location = useLocation();
+  const isReelMemo = location.pathname.startsWith('/reelmemo');
+
+  return (
+    <ProtectedRoute>
+      <>
+        {!isReelMemo && <Navbar />}
+        <main className={isReelMemo ? "reelmemo-main-content" : "main-content"}>
+          <Routes>
+            <Route path="/" element={<DashboardHome />} />
+            <Route path="/reelmemo/*" element={<ReelMemoPage />} />
+            <Route path="/perfil" element={<ProfileHome />} />
+            <Route path="/ajustes" element={<ProfileHome />} />
+          </Routes>
+        </main>
+      </>
+    </ProtectedRoute>
+  );
+};
+
+/**
  * Componente principal App que envuelve toda la aplicación con el Router.
- * Aquí se definen todas las rutas principales del sistema.
  */
 function App() {
   return (
     <Router>
       <div className="app-container">
         <Routes>
-          {/* Ruta pública para el inicio de sesión */}
           <Route path="/login" element={<AuthPage />} />
-          
-          {/* Rutas protegidas: el Muro de Privacidad envuelve tanto el Navbar como el contenido */}
-          <Route path="/*" element={
-            <ProtectedRoute>
-              <>
-                <Navbar />
-                <main className="main-content">
-                  <Routes>
-                    <Route path="/" element={<DashboardHome />} />
-                    <Route path="/reelmemo" element={<ReelMemoHome />} />
-                    <Route path="/perfil" element={<ProfileHome />} />
-                    <Route path="/ajustes" element={<ProfileHome />} />
-                  </Routes>
-                </main>
-              </>
-            </ProtectedRoute>
-          } />
+          <Route path="/*" element={<AppLayout />} />
         </Routes>
       </div>
     </Router>

@@ -5,7 +5,8 @@ import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { updateUsername, resetPassword, deleteUserAccount } from '../../data/service/user-service';
 import { Edit2, Lock, LogOut, Trash2 } from 'lucide-react';
-import './ProfileHome.css';
+import { useToast } from '../../components/toast-context';
+import './profile-home.css';
 
 /**
  * Interfaz para los datos del usuario en Firestore
@@ -28,8 +29,10 @@ export default function ProfileHome() {
   // States for name edit
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -75,10 +78,10 @@ export default function ProfileHome() {
     if (!user?.email) return;
     try {
       await resetPassword(user.email);
-      alert('Se ha enviado un enlace a tu correo para restablecer tu contraseña.');
+      showToast('Se ha enviado un enlace a tu correo para restablecer tu contraseña.', 'success');
     } catch (error) {
       console.error("Error sending reset email:", error);
-      alert('Error al enviar el correo de recuperación.');
+      showToast('Error al enviar el correo de recuperación.', 'error');
     }
   };
 
@@ -87,11 +90,11 @@ export default function ProfileHome() {
    */
   const handleDeleteAccount = async () => {
     if (!user) return;
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que quieres eliminar tu cuenta PERMANENTEMENTE? Esta acción no se puede deshacer."
-    );
-    if (!confirmDelete) return;
-    
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteAccount = async () => {
+    if (!user) return;
     try {
       await deleteUserAccount(user.uid);
       navigate('/login');
@@ -100,10 +103,12 @@ export default function ProfileHome() {
       const isRecentLoginRequired = error && typeof error === 'object' && 'code' in error && (error as {code: string}).code === 'auth/requires-recent-login';
       
       if (isRecentLoginRequired) {
-        alert("Por motivos de seguridad, debes cerrar sesión y volver a iniciarla para eliminar tu cuenta.");
+        showToast("Por seguridad, cierra sesión y vuelve a iniciarla para eliminar tu cuenta.", "warning", 5000);
       } else {
-        alert("No se pudo eliminar la cuenta. Inténtalo más tarde.");
+        showToast("No se pudo eliminar la cuenta. Inténtalo más tarde.", "error");
       }
+    } finally {
+      setShowDeleteModal(false);
     }
   };
 
@@ -209,6 +214,21 @@ export default function ProfileHome() {
           </section>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="profile-modal-overlay" onClick={() => setShowDeleteModal(false)}>
+          <div className="profile-modal" onClick={e => e.stopPropagation()}>
+            <h3 className="profile-modal-title">¿Eliminar cuenta?</h3>
+            <p className="profile-modal-desc">
+              Esta acción es <strong>irreversible</strong> y perderás todos tus datos permanentemente.
+            </p>
+            <div className="profile-modal-actions">
+              <button className="profile-btn-cancel" onClick={() => setShowDeleteModal(false)}>Cancelar</button>
+              <button className="profile-btn-danger" onClick={confirmDeleteAccount}>Eliminar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

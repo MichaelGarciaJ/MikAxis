@@ -10,6 +10,6 @@ MikAxis es un portal web (Dashboard) privado y personal accesible desde cualquie
 
 ## Modules Roadmap
 1. **Dashboard Home (Actual):** Pantalla de bienvenida con accesos directos (cards) a los módulos.
-2. **ReelMemo (Fase 2):** Gestor de series y películas (Migración desde React Native + TMDB + Firestore).
+2. **ReelMemo (Completado):** Gestor de series y películas (Migración desde React Native + TMDB + Firestore) con un diseño fiel a la app móvil.
 3. **Cumpleaños (Fase 3):** Recordatorio y agenda de cumpleaños.
 4. **Notas Rápidas & Vídeos (Fase 4):** Baúl de notas y enlaces multimedia.

@@ -251,3 +251,83 @@
     flex-direction: column;
   }
 }
+
+/* Modal de Eliminación de Cuenta */
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.profile-modal {
+  background-color: #1A1A1A;
+  border-radius: 16px;
+  padding: 32px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  border: 1px solid #333;
+}
+
+.profile-modal-title {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  color: #fff;
+  font-weight: 700;
+}
+
+.profile-modal-desc {
+  margin: 0 0 24px 0;
+  color: #A0A0A0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.profile-modal-desc strong {
+  color: #FF3B30;
+}
+
+.profile-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.profile-btn-cancel {
+  background: transparent;
+  border: 1px solid #444;
+  color: #D8C2BE;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-btn-cancel:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.profile-btn-danger {
+  background-color: #FF3B30;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-btn-danger:hover {
+  background-color: #D32F2F;
+}
