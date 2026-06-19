@@ -27,12 +27,12 @@ export default function Navbar() {
             const data = docSnap.data();
             setUserData({
               nombre: data.nombreUsuario || user.displayName || 'Usuario',
-              foto: data.fotoUsuario || user.photoURL || ''
+              foto: data.fotoUsuario || ''
             });
           } else {
             setUserData({
               nombre: user.displayName || 'Usuario',
-              foto: user.photoURL || ''
+              foto: ''
             });
           }
         } catch (error) {
@@ -68,14 +68,6 @@ export default function Navbar() {
     }
   };
 
-  /**
-   * Extrae la inicial del nombre para usar como avatar alternativo.
-   * @param name - Nombre del usuario
-   * @returns La primera letra en mayúscula
-   */
-  const getInitials = (name: string) => {
-    return name ? name.charAt(0).toUpperCase() : 'U';
-  };
 
   return (
     <nav className="navbar">
@@ -97,8 +89,8 @@ export default function Navbar() {
                 {userData.foto ? (
                   <img src={userData.foto} alt="Perfil" className="profile-pic" />
                 ) : (
-                  <div className="profile-pic-placeholder">
-                    {getInitials(userData.nombre)}
+                  <div className="profile-pic-placeholder" style={{ background: 'transparent' }}>
+                    <Logo className="profile-pic" />
                   </div>
                 )}
                 <span className="profile-name">{userData.nombre}</span>

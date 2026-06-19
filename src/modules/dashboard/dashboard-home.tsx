@@ -52,7 +52,10 @@ export default function DashboardHome() {
     <div className="dashboard-home container animate-fade-in">
       <header className="dashboard-header">
         <span className="welcome-tag">CENTRO DE MANDOS</span>
-        <h1 className="welcome-title">Bienvenido a <span className="title-accent">MikAxis</span></h1>
+        <h1 className="welcome-title">
+          <span className="greeting-text">Bienvenido a </span>
+          <span className="brand-text">Mik<span className="title-accent">Axis</span></span>
+        </h1>
         <p className="welcome-subtitle">Tu portal privado y personal de herramientas unificadas.</p>
       </header>
 

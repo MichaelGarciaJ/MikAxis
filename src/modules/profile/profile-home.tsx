@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../config/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { updateUsername, resetPassword, deleteUserAccount } from '../../data/service/user-service';
-import { Edit2, Lock, LogOut, Trash2 } from 'lucide-react';
+import { updateUsername, resetPassword, deleteUserAccount, updateAvatar } from '../../data/service/user-service';
+import { Edit2, Lock, LogOut, Trash2, Camera } from 'lucide-react';
 import { useToast } from '../../components/toast-context';
+import { Logo } from '../../components/logo';
 import './profile-home.css';
 
 /**
@@ -30,6 +31,11 @@ export default function ProfileHome() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  
+  // Cargamos la lista dinámicamente desde la carpeta public en tiempo de compilación
+  const avatarModules = import.meta.glob('/public/avatars/*.{png,jpg,jpeg}', { eager: true });
+  const avatarsList = Object.keys(avatarModules).map(key => key.replace('/public', ''));
   
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -125,12 +131,21 @@ export default function ProfileHome() {
   };
 
   /**
-   * Obtiene la inicial del nombre para mostrar en el avatar por defecto.
-   * @param name - Nombre del usuario
-   * @returns La inicial en mayúscula
+   * Actualiza la foto de perfil con un avatar local.
    */
-  const getInitials = (name: string) => {
-    return name ? name.charAt(0).toUpperCase() : 'U';
+  const handleSelectAvatar = async (avatarUrl: string) => {
+    if (!user) return;
+    try {
+      await updateAvatar(user.uid, avatarUrl);
+      if (userData) {
+        setUserData({ ...userData, fotoUsuario: avatarUrl });
+      }
+      setShowAvatarModal(false);
+      showToast('Foto de perfil actualizada.', 'success');
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+      showToast('Error al actualizar la foto de perfil.', 'error');
+    }
   };
 
   if (loading) {
@@ -141,7 +156,7 @@ export default function ProfileHome() {
     return <div className="profile-loading">No autorizado.</div>;
   }
 
-  const profilePic = userData?.fotoUsuario || user.photoURL || '';
+  const profilePic = userData?.fotoUsuario || '';
   const displayName = userData?.nombreUsuario || user.displayName || 'Usuario';
   const creationDate = userData?.creado ? new Date(userData.creado.seconds * 1000).toLocaleDateString('es-ES') : 'Desconocida';
 
@@ -154,12 +169,15 @@ export default function ProfileHome() {
 
       <div className="profile-card">
         <div className="profile-card-header">
-          <div className="profile-avatar-large">
+          <div className="profile-avatar-large" onClick={() => setShowAvatarModal(true)} style={{ cursor: 'pointer', position: 'relative' }}>
             {profilePic ? (
               <img src={profilePic} alt="Avatar" className="avatar-img" />
             ) : (
-              <div className="avatar-placeholder">{getInitials(displayName)}</div>
+              <div className="avatar-placeholder" style={{ background: 'transparent' }}><Logo width={64} height={64} /></div>
             )}
+            <div className="avatar-edit-overlay">
+              <Camera size={28} />
+            </div>
           </div>
           <div className="profile-info">
             {isEditingName ? (
@@ -225,6 +243,53 @@ export default function ProfileHome() {
             <div className="profile-modal-actions">
               <button className="profile-btn-cancel" onClick={() => setShowDeleteModal(false)}>Cancelar</button>
               <button className="profile-btn-danger" onClick={confirmDeleteAccount}>Eliminar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAvatarModal && (
+        <div className="profile-modal-overlay" onClick={() => setShowAvatarModal(false)}>
+          <div className="profile-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px' }}>
+            <h3 className="profile-modal-title">Elige un Avatar</h3>
+            <p className="profile-modal-desc" style={{ marginBottom: '10px' }}>
+              Selecciona una foto de perfil de nuestra galería.
+            </p>
+            
+            <div className="avatar-grid">
+              {/* Option to clear avatar and use MikAxis logo */}
+              <div 
+                className={`avatar-option ${profilePic === '' ? 'selected' : ''}`}
+                style={{ background: 'var(--card-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={() => handleSelectAvatar('')}
+                title="Usar Logo de MikAxis"
+              >
+                <Logo width={40} height={40} />
+              </div>
+
+              {/* Option to use ReelMemo logo */}
+              <div 
+                className={`avatar-option ${profilePic === '/reelmemo-logo.png' ? 'selected' : ''}`}
+                style={{ background: '#1A1110', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={() => handleSelectAvatar('/reelmemo-logo.png')}
+                title="Usar Logo de ReelMemo"
+              >
+                <img src="/reelmemo-logo.png" alt="ReelMemo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+              </div>
+
+              {avatarsList.map((avatar, index) => (
+                <img 
+                  key={index}
+                  src={avatar} 
+                  alt={`Avatar ${index + 1}`} 
+                  className={`avatar-option ${profilePic === avatar ? 'selected' : ''}`}
+                  onClick={() => handleSelectAvatar(avatar)}
+                />
+              ))}
+            </div>
+
+            <div className="profile-modal-actions" style={{ justifyContent: 'center', marginTop: '10px' }}>
+              <button className="profile-btn-cancel" style={{ width: '100%' }} onClick={() => setShowAvatarModal(false)}>Cerrar</button>
             </div>
           </div>
         </div>

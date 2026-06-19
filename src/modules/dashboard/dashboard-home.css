@@ -32,6 +32,16 @@
   letter-spacing: -1px;
 }
 
+.greeting-text {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.brand-text {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
 .title-accent {
   background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
   -webkit-background-clip: text;

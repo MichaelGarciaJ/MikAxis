@@ -21,7 +21,7 @@ export const registerWithEmail = async (email: string, pass: string, name: strin
   const newUser: UserEntity = {
     correo: user.email,
     nombreUsuario: name,
-    fotoUsuario: user.photoURL || "",
+    fotoUsuario: "",
     idUsuario: user.uid,
     isApproved: false,
     creado: new Date()
@@ -54,7 +54,7 @@ export const loginWithGoogle = async (): Promise<void> => {
     const newUser: UserEntity = {
       correo: user.email,
       nombreUsuario: user.displayName || "",
-      fotoUsuario: user.photoURL || "",
+      fotoUsuario: "",
       idUsuario: user.uid,
       isApproved: false,
       creado: new Date()
