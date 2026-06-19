@@ -5,6 +5,7 @@
 ## In Progress
 
 ## Done
+- [x] Desplegar la aplicación web MikAxis en Firebase Hosting.
 - [x] Implementar selector de avatares con lista dinámica (import.meta.glob) y estilos de cuadrícula responsiva, incluyendo opciones de logos de MikAxis y ReelMemo.
 - [x] Unificar diseño del logotipo (crear componente Logo, sincronizar favicon y refactorizar auth y navbar).
 - [x] Refactorizar la Biblioteca (Vistos) para que el chip 'Todo' funcione como un desplegable (modal) idéntico a Categorías.
