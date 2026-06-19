@@ -33,9 +33,14 @@ export default function ProfileHome() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   
-  // Cargamos la lista dinámicamente desde la carpeta public en tiempo de compilación
-  const avatarModules = import.meta.glob('/public/avatars/*.{png,jpg,jpeg}', { eager: true });
-  const avatarsList = Object.keys(avatarModules).map(key => key.replace('/public', ''));
+  // Lista explícita de avatares en public/avatars para evitar errores de Vite al procesar assets estáticos.
+  const avatarsList = [
+    '/avatars/avatar1.png', 
+    '/avatars/avatar2.png', 
+    '/avatars/avatar3.png', 
+    '/avatars/avatar4.png', 
+    '/avatars/avatar5.png'
+  ];
   
   const navigate = useNavigate();
   const { showToast } = useToast();
